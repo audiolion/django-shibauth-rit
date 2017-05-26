@@ -12,7 +12,7 @@ def login_link(request):
     and uses the 'target' url parameter.
     """
     full_path = quote(request.get_full_path())
-    login = reverse('shib:login')
+    login = reverse('shib:shibauth_login')
     login_link = "%s?target=%s" % (login, full_path)
     return {'login_link': login_link}
 
@@ -27,6 +27,6 @@ def logout_link(request, *args):
     # LOGOUT_REDIRECT_URL specifies a default logout page that will always be used when
     # users logout from Shibboleth.
     target = LOGOUT_REDIRECT_URL or quote(request.build_absolute_uri())
-    logout = reverse('shib:logout')
+    logout = reverse('shib:shibauth_logout')
     logout_link = "%s?target=%s" % (logout, target)
     return {'logout_link': logout_link}
