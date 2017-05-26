@@ -1,6 +1,6 @@
-from django.conf import settings
-
+# Third Party Library Imports
 from appconf import AppConf
+from django.conf import settings
 
 
 class ShibauthRitConf(AppConf):

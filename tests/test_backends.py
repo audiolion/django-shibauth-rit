@@ -1,32 +1,31 @@
 # -*- coding: utf-8 -*-
-import os
-
+# Third Party Library Imports
 from django.conf import settings
 from django.contrib import auth
-from django.contrib.auth.models import User, Group
-from django.test import TestCase, RequestFactory
+from django.contrib.auth.models import User
+from django.test import RequestFactory, TestCase
 
-from shibauth_rit.backends import ShibauthRitBackend
+# First Party Library Imports
 from shibauth_rit.middleware import ShibauthRitMiddleware
 
 try:
     from importlib import reload  # python 3.4+
 except ImportError:
     try:
-        from imp import reload # for python 3.2/3.3
+        from imp import reload  # for python 3.2/3.3
     except ImportError:
-        pass # this means we're on python 2, where reload is a builtin function
+        pass  # this means we're on python 2, where reload is a builtin function
 
 
 settings.SHIBAUTH_ATTRIBUTE_MAP = {
-   "idp": (False, "idp"),
-   "mail": (False, "email"),
-   "uid": (True, "username"),
-   "schoolStatus": (False, "status"),
-   "affiliation": (False, "affiliation"),
-   "sessionId": (False, "session_id"),
-   "givenName": (False, "first_name"),
-   "sn": (False, "last_name"),
+    "idp": (False, "idp"),
+    "mail": (False, "email"),
+    "uid": (True, "username"),
+    "schoolStatus": (False, "status"),
+    "affiliation": (False, "affiliation"),
+    "sessionId": (False, "session_id"),
+    "givenName": (False, "first_name"),
+    "sn": (False, "last_name"),
 }
 
 settings.AUTHENTICATION_BACKENDS += (
@@ -43,7 +42,7 @@ settings.SHIBBOLETH_LOGOUT_URL = 'https://sso.rit.edu/logout?next=%s'
 settings.SHIBBOLETH_LOGOUT_REDIRECT_URL = 'http://rit.edu/'
 
 # we import the module so we can reload with new settings for tests
-from shibauth_rit import backends
+from shibauth_rit import backends  # noqa; E402
 
 
 class TestAttributes(TestCase):

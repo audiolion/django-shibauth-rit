@@ -1,6 +1,8 @@
+# Third Party Library Imports
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend
 
+# First Party Library Imports
 from shibauth_rit.conf import settings
 
 User = get_user_model()
@@ -48,11 +50,12 @@ class ShibauthRitBackend(RemoteUserBackend):
             user, created = User._default_manager.get_or_create(**required_kwargs)
             if created:
                 """
-                @note: setting password for user needs on initial creation of user instead of after auth.login() of middleware.
-                because get_session_auth_hash() returns the salted_hmac value of salt and password.
-                If it remains after the auth.login() it will return a different auth_hash
-                than what's stored in session "request.session[HASH_SESSION_KEY]".
-                Also we don't need to update the user's password everytime he logs in.
+                @note: setting password for user needs on initial creation of user instead
+                of after auth.login() of middleware. Because get_session_auth_hash() returns the
+                salted_hmac value of salt and password. If it remains after the auth.login() it
+                will return a different auth_hash than what's stored in session
+                "request.session[HASH_SESSION_KEY]". Also we don't need to update the
+                user's password everytime he logs in.
                 """
                 user.set_unusable_password()
                 user.is_active = True

@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8
-from __future__ import unicode_literals, absolute_import
+# Future Imports
+from __future__ import absolute_import, unicode_literals
 
+# Standard Library Imports
 import os
 import sys
 
+# Third Party Library Imports
 import django
 from django.conf import settings
 from django.test.utils import get_runner

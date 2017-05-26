@@ -1,17 +1,18 @@
+# Third Party Library Imports
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ImproperlyConfigured
-from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
+
+# First Party Library Imports
+from shibauth_rit.conf import settings
 
 try:
     from django.utils.six.moves.urllib.parse import quote
 except ImportError:
     from urllib import quote
 
-from shibauth_rit.conf import settings
 
 
 class ShibView(TemplateView):
@@ -54,7 +55,7 @@ class ShibLoginView(TemplateView):
     def get(self, *args, **kwargs):
         # Remove session value that is forcing Shibboleth reauthentication.
         self.request.session.pop(getattr(settings, "SHIBAUTH_LOGOUT_SESSION_KEY"), None)
-        login = getattr(settings, "SHIBAUTH_LOGIN_URL") + '?target=%s' % quote(self.request.GET.get(self.redirect_field_name, ''))
+        login = getattr(settings, "SHIBAUTH_LOGIN_URL") + '?target=%s' % quote(self.request.GET.get(self.redirect_field_name, ''))  # noqa E501;
         return redirect(login)
 
 
@@ -74,7 +75,7 @@ class ShibLogoutView(TemplateView):
         self.request.session[getattr(settings, "SHIBAUTH_LOGOUT_SESSION_KEY")] = True
         # Get target url in order of preference.
         target = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL") or \
-                 quote(self.request.GET.get(self.redirect_field_name, '')) or \
-                 quote(request.build_absolute_uri())
+            quote(self.request.GET.get(self.redirect_field_name, '')) or \
+            quote(request.build_absolute_uri())
         logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") % target
         return redirect(logout)

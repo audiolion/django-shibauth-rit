@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+# Third Party Library Imports
 from django.conf.urls import url
-from django.views.generic import TemplateView
 
-from .views import ShibView, ShibLoginView, ShibLogoutView
-
+# Local Imports
+from .views import ShibLoginView, ShibLogoutView, ShibView
 
 urlpatterns = [
     url(r'^$', ShibView.as_view(), name='info'),

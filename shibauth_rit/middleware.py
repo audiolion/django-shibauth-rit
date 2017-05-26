@@ -1,10 +1,11 @@
+# Third Party Library Imports
 import django
-
 from django.contrib import auth
-from django.contrib.auth.models import Group
 from django.contrib.auth.middleware import RemoteUserMiddleware
+from django.contrib.auth.models import Group
 from django.core.exceptions import ImproperlyConfigured
 
+# First Party Library Imports
 from shibauth_rit.conf import settings
 
 

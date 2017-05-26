@@ -1,21 +1,19 @@
-import os
-
+# Third Party Library Imports
 import django
 from django.conf import settings
 from django.contrib import auth
-from django.contrib.auth.models import User, Group
-from django.test import TestCase, RequestFactory, modify_settings
+from django.contrib.auth.models import User
+from django.test import TestCase, modify_settings
 
-from shibauth_rit.backends import ShibauthRitBackend
-from shibauth_rit.middleware import ShibauthRitMiddleware
+# First Party Library Imports
+from shibauth_rit import middleware
 
 try:
     from importlib import reload  # python 3.4+
 except ImportError:
-    pass # this means we're on python 2, where reload is a builtin function
+    pass  # this means we're on python 2, where reload is a builtin function
 
 
-from shibauth_rit import middleware
 
 django_1_10 = False if django.VERSION < (1, 10) else True
 

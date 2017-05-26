@@ -66,7 +66,7 @@ else:
     )
 
 SHIBAUTH_ATTRIBUTE_MAP = {
-   "uid": (True, "username"),
+    "uid": (True, "username"),
 }
 
 
@@ -82,24 +82,24 @@ SHIBAUTH_LOGOUT_REDIRECT_URL = 'http://rit.edu/'
 SHIBAUTH_REMOTE_USER_HEADER = "uid"
 
 SAMPLE_HEADERS = {
-  "applicationID": "default",
-  "authenticationMethod": "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified",
-  "authnContextClass": "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified",
-  "idp": "https://shibboleth.main.ad.rit.edu/idp/shibboleth",
-  "sessionID": "1",
-  "sessionIndex": "12",
-  "ritEduAffiliation": "Student;Staff;StudentWorker;Adjust;Retiree",
-  "schoolBarCode": "12345678",
-  "schoolNetId": "Sample_Developer",
-  "schoolStatus": "active",
-  "department": "University Library, Integrated Technology Services",
-  "displayName": "Sample Developer",
-  "uid": "rrcdis1",
-  "givenName": "Sample",
-  "ritEduMemberOfUid": "forklift-operators;vendingmach-admins;historyintegrator",
-  "mail": "rrcdis1@rit.edu",
-  "persistentId": "https://sso.college.edu/idp/shibboleth!https://server.college.edu/shibboleth-sp!sk1Z9qKruvXY7JXvsq4GRb8GCUk=",
-  "sn": "Developer",
-  "title": "Dev",
-  "unscopedAffiliation": "member;staff",
+    "applicationID": "default",
+    "authenticationMethod": "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified",
+    "authnContextClass": "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified",
+    "idp": "https://shibboleth.main.ad.rit.edu/idp/shibboleth",
+    "sessionID": "1",
+    "sessionIndex": "12",
+    "ritEduAffiliation": "Student;Staff;StudentWorker;Adjust;Retiree",
+    "schoolBarCode": "12345678",
+    "schoolNetId": "Sample_Developer",
+    "schoolStatus": "active",
+    "department": "University Library, Integrated Technology Services",
+    "displayName": "Sample Developer",
+    "uid": "rrcdis1",
+    "givenName": "Sample",
+    "ritEduMemberOfUid": "forklift-operators;vendingmach-admins;historyintegrator",
+    "mail": "rrcdis1@rit.edu",
+    "persistentId": "https://sso.college.edu/idp/shibboleth!https://server.college.edu/shibboleth-sp!sk1Z9qKruvXY7JXvsq4GRb8GCUk=",  # noqa; E501
+    "sn": "Developer",
+    "title": "Dev",
+    "unscopedAffiliation": "member;staff",
 }

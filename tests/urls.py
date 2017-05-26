@@ -1,11 +1,14 @@
 # -*- coding: utf-8
-from __future__ import unicode_literals, absolute_import
+# Future Imports
+from __future__ import absolute_import, unicode_literals
 
-from django.conf.urls import url, include
-from django.http import HttpRequest, HttpResponse
+# Third Party Library Imports
+from django.conf.urls import include, url
+from django.http import HttpResponse
 from django.template import RequestContext, Template
 from django.views.decorators.cache import never_cache
 
+# First Party Library Imports
 from shibauth_rit.urls import urlpatterns as shibauth_rit_urls
 
 

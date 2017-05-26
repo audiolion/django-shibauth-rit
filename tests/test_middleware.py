@@ -1,23 +1,18 @@
 # -*- coding: utf-8 -*-
-import os
-
+# Third Party Library Imports
 from django.conf import settings
-from django.contrib import auth
-from django.contrib.auth.models import User, Group
-from django.test import TestCase, RequestFactory
-
-from shibauth_rit.backends import ShibauthRitBackend
-from shibauth_rit.middleware import ShibauthRitMiddleware
+from django.contrib.auth.models import Group, User
+from django.test import TestCase
 
 settings.SHIBAUTH_ATTRIBUTE_MAP = {
-   "idp": (False, "idp"),
-   "mail": (False, "email"),
-   "uid": (True, "username"),
-   "schoolStatus": (False, "status"),
-   "affiliation": (False, "affiliation"),
-   "sessionId": (False, "session_id"),
-   "givenName": (False, "first_name"),
-   "sn": (False, "last_name"),
+    "idp": (False, "idp"),
+    "mail": (False, "email"),
+    "uid": (True, "username"),
+    "schoolStatus": (False, "status"),
+    "affiliation": (False, "affiliation"),
+    "sessionId": (False, "session_id"),
+    "givenName": (False, "first_name"),
+    "sn": (False, "last_name"),
 }
 
 

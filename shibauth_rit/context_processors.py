@@ -1,6 +1,8 @@
+# Third Party Library Imports
 from django.core.urlresolvers import reverse
 from django.utils.six.moves.urllib_parse import quote
 
+# First Party Library Imports
 from shibauth_rit.conf import settings
 
 
@@ -12,7 +14,8 @@ def login_link(request):
     full_path = quote(request.get_full_path())
     login = reverse('shibboleth:login')
     login_link = "%s?target=%s" % (login, full_path)
-    return { 'login_link': login_link }
+    return {'login_link': login_link}
+
 
 def logout_link(request, *args):
     """
@@ -26,4 +29,4 @@ def logout_link(request, *args):
     target = LOGOUT_REDIRECT_URL or quote(request.build_absolute_uri())
     logout = reverse('shibboleth:logout')
     logout_link = "%s?target=%s" % (logout, target)
-    return { 'logout_link': logout_link }
+    return {'logout_link': logout_link}
