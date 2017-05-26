@@ -13,7 +13,7 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
     Authentication Middleware for use with Shibboleth.  Uses the recommended pattern
     for remote authentication from: https://github.com/django/django/blob/master/django/contrib/auth/middleware.py
     """
-    header = "REMOTE_USER"
+    header = getattr(settings, "SHIBAUTH_REMOTE_USER_HEADER")
     force_logout_if_no_header = True
     django_1_11 = False if django.VERSION < (1, 11) else True
     django_1_10 = False if django.VERSION < (1, 10) else True
@@ -21,12 +21,13 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
     def process_request(self, request):
         # AuthenticationMiddleware is required so that request.user exists.
         if not hasattr(request, 'user'):
-            raise ImproperlyConfigured(
-                "The Django remote user auth middleware requires the"
-                " authentication middleware to be installed.  Edit your"
-                " MIDDLEWARE_CLASSES setting to insert"
-                " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
-                " before the RemoteUserMiddleware class.")
+            middleware = 'MIDDLEWARE_CLASSES' if not self.django_1_10 else 'MIDDLEWARE'
+                raise ImproperlyConfigured(
+                    ("The Django remote user auth middleware requires the"
+                     " authentication middleware to be installed.  Edit your"
+                     " {} setting to insert"
+                     " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
+                     " before the RemoteUserMiddleware class.").format(middleware))
 
         # To support logout.  If this variable is True, do not
         # authenticate user and return now.
@@ -70,10 +71,8 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
         # Add parsed attributes to the session.
         request.session['shib'] = shib_meta
         if error:
-            # TODO: log error somewhere
+            self.handle_parse_exception(shib_meta)
             pass
-            # raise ShibbolethValidationError("All required Shibboleth elements"
-            #                                 " not found.  %s" % shib_meta)
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
@@ -114,6 +113,14 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
         """
         return
 
+    def handle_parse_exception(self, shib_meta):
+        """
+        This is a stub method that can be subclassed to handle what should happen when a parse
+        exception occurs. If you raise ShibauthRitValidationException it will need to be caught
+        further up to prevent an internal server error (HTTP 500).
+        """
+        return
+
     def update_user_groups(self, request, user):
         groups = self.parse_group_attributes(request)
         # Remove the user from all groups that are not specified in the shibboleth metadata
@@ -135,12 +142,13 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
         shib_attrs = {}
         error = False
         meta = request.META
-        SHIBAUTH_ATTRIBUTE_MAP = getattr(settings, "SHIBAUTH_ATTRIBUTE_MAP")
-        for header, attr in list(SHIBAUTH_ATTRIBUTE_MAP.items()):
+        attr_map = getattr(settings, "SHIBAUTH_ATTRIBUTE_MAP")
+        for header, attr in list(attr_map.items()):
             required, name = attr
             value = meta.get(header, None)
-            shib_attrs[name] = value
+            shib_attrs[name] = (value, required)
             if not value or value == '':
+                shib_attrs.pop(name, None)
                 if required:
                     error = True
         return shib_attrs, error
@@ -151,10 +159,11 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
         Parse the Shibboleth attributes for the GROUP_ATTRIBUTES and generate a list of them.
         """
         groups = []
-        for attr in GROUP_ATTRIBUTES:
+        group_attrs = getattr(settings, "SHIBAUTH_GROUP_ATTRIBUTES")
+        for attr in group_attrs:
             groups += filter(bool, request.META.get(attr, '').split(';'))
         return groups
 
 
-class ShibbolethValidationError(Exception):
+class ShibauthRitValidationError(Exception):
     pass

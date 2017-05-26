@@ -7,10 +7,17 @@
       <h1>Shibboleth Attributes</h1>
       <p>Mapped shibboleth attributes will be displayed here.</p>
       <p>The purpose of this view is for debugging.</p>
+      <h2>User Info</h2>
       <ul>
           <li>username: {{ user.username }}</li>
           <li>name: {{ user.first_name }} {{ user.last_name }}</li>
           <li>email: {{ user.email }}</li>
+      </ul>
+      <h2>Shib Meta</h2>
+      <ul>
+        {% for k, v in request.session.shib.items %}
+          <li>{{ k }}: {{ v }}</li>
+        {% endfor %}
       </ul>
     </div>
 </body>

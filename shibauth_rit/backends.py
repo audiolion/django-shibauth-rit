@@ -27,19 +27,25 @@ class ShibauthRitBackend(RemoteUserBackend):
         Returns None if ``create_unknown_user`` is ``False`` and a ``User``
         object with the given username is not found in the database.
         """
-        # import pdb
-        # pdb.set_trace()
         if not remote_user:
             return
         username = self.clean_username(remote_user)
         field_names = [x.name for x in User._meta.get_fields()]
-        kwargs = {field: shib_meta[field] for field in field_names if field in shib_meta}
+        required_kwargs = {}
+        non_required_kwargs = {}
+        for field in field_names:
+            if field in shib_meta:
+                meta, required = shib_meta[field]
+                if required:
+                    required_kwargs[field] = meta
+                else:
+                    non_required_kwargs[field] = meta
         # Note that this could be accomplished in one try-except clause, but
         # instead we use get_or_create when creating users since it has
         # built-in safeguards for multiple threads.
         if self.create_unknown_user:
-            kwargs[User.USERNAME_FIELD] = username
-            user, created = User._default_manager.get_or_create(**kwargs)
+            required_kwargs[User.USERNAME_FIELD] = username
+            user, created = User._default_manager.get_or_create(**required_kwargs)
             if created:
                 """
                 @note: setting password for user needs on initial creation of user instead of after auth.login() of middleware.
@@ -61,8 +67,8 @@ class ShibauthRitBackend(RemoteUserBackend):
         # parameters. Otherwise the parameters (like mail address, sure_name or last_name) will always
         # be the initial values from the first login. Only save user object if there are any changes.
         if user:
-            if not min([getattr(user, k) == v for k, v in kwargs.items()]):
-                user.__dict__.update(**kwargs)
+            if [getattr(user, k) == v for k, v in non_required_kwargs.items()]:
+                user.__dict__.update(**non_required_kwargs)
                 user.save()
         return user if self.user_can_authenticate(user) else None
 

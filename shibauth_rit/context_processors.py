@@ -26,4 +26,4 @@ def logout_link(request, *args):
     target = LOGOUT_REDIRECT_URL or quote(request.build_absolute_uri())
     logout = reverse('shibboleth:logout')
     logout_link = "%s?target=%s" % (logout, target)
-    return { 'logout_link': ll }
+    return { 'logout_link': logout_link }

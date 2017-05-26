@@ -19,7 +19,7 @@ class ShibView(TemplateView):
     This is here to offer a Shib protected page that we can
     route users through to login.
     """
-    template_name = 'shibboleth/user_info.html'
+    template_name = 'shibauth_rit/user_info.html'
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -28,17 +28,17 @@ class ShibView(TemplateView):
         class based views.
         https://docs.djangoproject.com/en/dev/topics/auth/
         """
-        return super(ShibbolethView, self).dispatch(request, *args, **kwargs)
+        return super(ShibView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, **kwargs):
         """Process the request."""
         next = self.request.GET.get('next', None)
         if next is not None:
             return redirect(next)
-        return super(ShibbolethView, self).get(request)
+        return super(ShibView, self).get(request)
 
     def get_context_data(self, **kwargs):
-        context = super(ShibbolethView, self).get_context_data(**kwargs)
+        context = super(ShibView, self).get_context_data(**kwargs)
         context['user'] = self.request.user
         return context
 

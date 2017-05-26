@@ -15,56 +15,55 @@ except ImportError:
     pass # this means we're on python 2, where reload is a builtin function
 
 
-SAMPLE_HEADERS = {
-  "REMOTE_USER": "rrcdis1",
-  "Shib-Application-ID": "default",
-  "Shib-Authentication-Method": "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified",
-  "Shib-AuthnContext-Class": "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified",
-  "Shib-Identity-Provider": "https://shibboleth.main.ad.rit.edu/idp/shibboleth",
-  "Shib-Session-ID": "1",
-  "Shib-Session-Index": "12",
-  "Shibboleth-affiliation": "member@college.edu;staff@college.edu",
-  "Shibboleth-schoolBarCode": "12345678",
-  "Shibboleth-schoolNetId": "Sample_Developer",
-  "Shibboleth-schoolStatus": "active",
-  "Shibboleth-department": "University Library, Integrated Technology Services",
-  "Shibboleth-displayName": "Sample Developer",
-  "uid": "rrcdis1",
-  "Shibboleth-givenName": "Sample",
-  "Shibboleth-isMemberOf": "SCHOOL:COMMUNITY:EMPLOYEE:ADMINISTRATIVE:BASE;SCHOOL:COMMUNITY:EMPLOYEE:STAFF:SAC:P;COMMUNITY:ALL;SCHOOL:COMMUNITY:EMPLOYEE:STAFF:SAC:M;",
-  "Shibboleth-mail": "rrcdis1@rit.edu",
-  "Shibboleth-persistent-id": "https://sso.college.edu/idp/shibboleth!https://server.college.edu/shibboleth-sp!sk1Z9qKruvXY7JXvsq4GRb8GCUk=",
-  "Shibboleth-sn": "Developer",
-  "Shibboleth-title": "Dev",
-  "Shibboleth-unscoped-affiliation": "member;staff",
-}
+from shibauth_rit import middleware
 
 django_1_10 = False if django.VERSION < (1, 10) else True
 
+settings.SHIBAUTH_REMOTE_USER_HEADER = 'REMOTE_USER'
+
+
 class RemoteUserTest(TestCase):
 
-    header = 'REMOTE_USER'
+    @classmethod
+    def setUpTestData(cls):
+        cls.header = 'REMOTE_USER'
+        # Usernames to be passed in REMOTE_USER for the test_known_user test case.
+        cls.known_user = 'knownuser'
+        cls.known_user2 = 'knownuser2'
+        reload(middleware)
 
-    # Usernames to be passed in REMOTE_USER for the test_known_user test case.
-    known_user = 'knownuser'
-    known_user2 = 'knownuser2'
+    def setUp(self):
+        self.known_user = User.objects.create(username=self.known_user)
+        self.known_user2 = User.objects.create(username=self.known_user2)
+
+    def tearDown(self):
+        reload(middleware)
 
     def test_no_remote_user(self):
         """
-        Tests requests where no remote user is specified and insures that no
+        Tests requests where no remote user is specified and ensures that no
         users get created.
         """
         num_users = User.objects.count()
         response = self.client.get('/remote_user/')
-        self.assertTrue(response.context['user'].is_anonymous)
+        if django_1_10:
+            self.assertTrue(response.context['user'].is_anonymous)
+        else:
+            self.assertTrue(response.context['user'].is_anonymous())
         self.assertEqual(User.objects.count(), num_users)
 
         response = self.client.get('/remote_user/', **{self.header: None})
-        self.assertTrue(response.context['user'].is_anonymous)
+        if django_1_10:
+            self.assertTrue(response.context['user'].is_anonymous)
+        else:
+            self.assertTrue(response.context['user'].is_anonymous())
         self.assertEqual(User.objects.count(), num_users)
 
         response = self.client.get('/remote_user/', **{self.header: ''})
-        self.assertTrue(response.context['user'].is_anonymous)
+        if django_1_10:
+            self.assertTrue(response.context['user'].is_anonymous)
+        else:
+            self.assertTrue(response.context['user'].is_anonymous())
         self.assertEqual(User.objects.count(), num_users)
 
     def test_unknown_user(self):
@@ -86,8 +85,6 @@ class RemoteUserTest(TestCase):
         """
         Tests the case where the username passed in the header is a valid User.
         """
-        User.objects.create(username='knownuser')
-        User.objects.create(username='knownuser2')
         num_users = User.objects.count()
         response = self.client.get('/remote_user/',
                                    **{self.header: self.known_user})
@@ -111,7 +108,7 @@ class RemoteUserTest(TestCase):
             AUTHENTICATION_BACKENDS={'append': 'django.contrib.auth.backends.ModelBackend'},
         )
         self.patched_settings.enable()
-        User.objects.create(username='knownuser')
+
         # Known user authenticates
         response = self.client.get('/remote_user/',
                                    **{self.header: self.known_user})
@@ -132,13 +129,17 @@ class RemoteUserTest(TestCase):
         auth.authenticate(username='modeluser', password='foo')
         response = self.client.get('/remote_user/')
         self.assertEqual(response.context['user'].username, 'modeluser')
+        if django_1_10:
+            self.assertFalse(response.context['user'].is_anonymous)
+        else:
+            self.assertFalse(response.context['user'].is_anonymous())
 
     def test_user_switch_forces_new_login(self):
         """
         If the username in the header changes between requests
         that the original user is logged out
         """
-        User.objects.create(username='knownuser')
+
         # Known user authenticates
         response = self.client.get('/remote_user/',
                                    **{self.header: self.known_user})
@@ -150,9 +151,9 @@ class RemoteUserTest(TestCase):
         # In backends that create a new user, username is "newnewuser"
         # In backends that do not create new users, it is '' (anonymous user)
         self.assertNotEqual(response.context['user'].username, 'knownuser')
+        self.assertTrue(response.context['user'].username in ['', 'newnewuser'])
 
-    def test_active_unknown_user(self):
-        User.objects.create(username='knownuser')
+    def test_active_user(self):
         response = self.client.get('/remote_user/', **{self.header: 'knownuser'})
         if django_1_10:
             self.assertFalse(response.context['user'].is_anonymous)
@@ -160,7 +161,8 @@ class RemoteUserTest(TestCase):
             self.assertFalse(response.context['user'].is_anonymous())
 
     def test_inactive_user(self):
-        User.objects.create(username='knownuser', is_active=False)
+        self.known_user.is_active = False
+        self.known_user.save()
         response = self.client.get('/remote_user/', **{self.header: 'knownuser'})
         if django_1_10:
             self.assertTrue(response.context['user'].is_anonymous)
