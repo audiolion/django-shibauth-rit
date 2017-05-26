@@ -11,7 +11,10 @@ from shibauth_rit import middleware
 try:
     from importlib import reload  # python 3.4+
 except ImportError:
-    pass  # this means we're on python 2, where reload is a builtin function
+    try:
+        from imp import reload  # for python 3.2/3.3
+    except ImportError:
+        pass  # this means we're on python 2, where reload is a builtin function
 
 
 
