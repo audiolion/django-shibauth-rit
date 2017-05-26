@@ -54,8 +54,8 @@ class ShibLoginView(TemplateView):
     def get(self, *args, **kwargs):
         # Remove session value that is forcing Shibboleth reauthentication.
         self.request.session.pop(getattr(settings, "SHIBAUTH_LOGOUT_SESSION_KEY"), None)
-        login = getattr(settings, "SHIBAUTH_LOGIN_URL") + "?{}={}".format(
-            self.redirect_field_name, quote(self.request.GET.get(self.redirect_field_name, '')))
+        login = getattr(settings, "SHIBAUTH_LOGIN_URL") + "?target={}".format(
+            quote(self.request.GET.get(self.redirect_field_name, '')))
         return redirect(login)
 
 
@@ -77,6 +77,5 @@ class ShibLogoutView(TemplateView):
         next = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL") or \
             quote(self.request.GET.get(self.redirect_field_name, '')) or \
             quote(request.build_absolute_uri())
-        logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") + "?{}={}".format(
-            self.redirect_field_name, next)
+        logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") + "?target={}".format(next)
         return redirect(logout)
