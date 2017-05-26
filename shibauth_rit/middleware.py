@@ -22,12 +22,12 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
         # AuthenticationMiddleware is required so that request.user exists.
         if not hasattr(request, 'user'):
             middleware = 'MIDDLEWARE_CLASSES' if not self.django_1_10 else 'MIDDLEWARE'
-                raise ImproperlyConfigured(
-                    ("The Django remote user auth middleware requires the"
-                     " authentication middleware to be installed.  Edit your"
-                     " {} setting to insert"
-                     " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
-                     " before the RemoteUserMiddleware class.").format(middleware))
+            raise ImproperlyConfigured(
+                ("The Django remote user auth middleware requires the"
+                 " authentication middleware to be installed.  Edit your"
+                 " {} setting to insert"
+                 " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
+                 " before the RemoteUserMiddleware class.").format(middleware))
 
         # To support logout.  If this variable is True, do not
         # authenticate user and return now.
