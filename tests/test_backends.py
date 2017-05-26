@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Third Party Library Imports
+# Third Party Library Imports
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -38,8 +39,8 @@ settings.MIDDLEWARE_CLASSES += (
 
 settings.ROOT_URLCONF = 'tests.urls'
 
-settings.SHIBBOLETH_LOGOUT_URL = 'https://sso.rit.edu/logout?next=%s'
-settings.SHIBBOLETH_LOGOUT_REDIRECT_URL = 'http://rit.edu/'
+settings.SHIBAUTH_LOGOUT_URL = 'https://sso.rit.edu/logout'
+settings.SHIBAUTH_LOGOUT_REDIRECT_URL = 'http://rit.edu/'
 
 # we import the module so we can reload with new settings for tests
 from shibauth_rit import backends  # noqa; E402

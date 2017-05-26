@@ -14,7 +14,6 @@ except ImportError:
     from urllib import quote
 
 
-
 class ShibView(TemplateView):
     """
     This is here to offer a Shib protected page that we can
@@ -50,12 +49,13 @@ class ShibLoginView(TemplateView):
     Some code borrowed from:
     https://github.com/stefanfoulis/django-class-based-auth-views.
     """
-    redirect_field_name = "target"
+    redirect_field_name = "next"
 
     def get(self, *args, **kwargs):
         # Remove session value that is forcing Shibboleth reauthentication.
         self.request.session.pop(getattr(settings, "SHIBAUTH_LOGOUT_SESSION_KEY"), None)
-        login = getattr(settings, "SHIBAUTH_LOGIN_URL") + '?target=%s' % quote(self.request.GET.get(self.redirect_field_name, ''))  # noqa E501;
+        login = getattr(settings, "SHIBAUTH_LOGIN_URL") + "?{}={}".format(
+            self.redirect_field_name, quote(self.request.GET.get(self.redirect_field_name, '')))
         return redirect(login)
 
 
@@ -65,7 +65,7 @@ class ShibLogoutView(TemplateView):
     Some code borrowed from:
     https://github.com/stefanfoulis/django-class-based-auth-views.
     """
-    redirect_field_name = "target"
+    redirect_field_name = "next"
 
     def get(self, request, *args, **kwargs):
         # Log the user out.
@@ -74,8 +74,9 @@ class ShibLogoutView(TemplateView):
         # Shibboleth reauthentication.
         self.request.session[getattr(settings, "SHIBAUTH_LOGOUT_SESSION_KEY")] = True
         # Get target url in order of preference.
-        target = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL") or \
+        next = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL") or \
             quote(self.request.GET.get(self.redirect_field_name, '')) or \
             quote(request.build_absolute_uri())
-        logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") % target
+        logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") + "?{}={}".format(
+            self.redirect_field_name, next)
         return redirect(logout)

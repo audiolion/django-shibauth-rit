@@ -34,6 +34,8 @@ TEMPLATES = [
 
 ROOT_URLCONF = "tests.urls"
 
+ALLOWED_HOSTS = ['rit.edu']
+
 INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -76,7 +78,7 @@ AUTHENTICATION_BACKENDS = (
 
 ROOT_URLCONF = 'tests.urls'
 
-SHIBAUTH_LOGOUT_URL = 'https://sso.rit.edu/logout?next=%s'
+SHIBAUTH_LOGOUT_URL = 'https://sso.rit.edu/logout'
 SHIBAUTH_LOGOUT_REDIRECT_URL = 'http://rit.edu/'
 
 SHIBAUTH_REMOTE_USER_HEADER = "uid"

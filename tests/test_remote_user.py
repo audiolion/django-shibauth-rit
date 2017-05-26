@@ -17,7 +17,6 @@ except ImportError:
         pass  # this means we're on python 2, where reload is a builtin function
 
 
-
 django_1_10 = False if django.VERSION < (1, 10) else True
 
 settings.SHIBAUTH_REMOTE_USER_HEADER = 'REMOTE_USER'
@@ -27,7 +26,8 @@ class RemoteUserTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.header = 'REMOTE_USER'
+        cls.header = settings.SHIBAUTH_REMOTE_USER_HEADER
+        cls.headers = settings.SAMPLE_HEADERS
         # Usernames to be passed in REMOTE_USER for the test_known_user test case.
         cls.known_user = 'knownuser'
         cls.known_user2 = 'knownuser2'
@@ -53,14 +53,16 @@ class RemoteUserTest(TestCase):
             self.assertTrue(response.context['user'].is_anonymous())
         self.assertEqual(User.objects.count(), num_users)
 
-        response = self.client.get('/remote_user/', **{self.header: None})
+        self.headers[self.header] = None
+        response = self.client.get('/remote_user/', **self.headers)
         if django_1_10:
             self.assertTrue(response.context['user'].is_anonymous)
         else:
             self.assertTrue(response.context['user'].is_anonymous())
         self.assertEqual(User.objects.count(), num_users)
 
-        response = self.client.get('/remote_user/', **{self.header: ''})
+        self.headers[self.header] = ''
+        response = self.client.get('/remote_user/', **self.headers)
         if django_1_10:
             self.assertTrue(response.context['user'].is_anonymous)
         else:
@@ -73,13 +75,14 @@ class RemoteUserTest(TestCase):
         as a User.
         """
         num_users = User.objects.count()
-        response = self.client.get('/remote_user/', **{self.header: 'newuser'})
+        self.headers[self.header] = 'newuser'
+        response = self.client.get('/remote_user/', **self.headers)
         self.assertEqual(response.context['user'].username, 'newuser')
         self.assertEqual(User.objects.count(), num_users + 1)
         User.objects.get(username='newuser')
 
         # Another request with same user should not create any new users.
-        response = self.client.get('/remote_user/', **{self.header: 'newuser'})
+        response = self.client.get('/remote_user/', **self.headers)
         self.assertEqual(User.objects.count(), num_users + 1)
 
     def test_known_user(self):
@@ -87,14 +90,14 @@ class RemoteUserTest(TestCase):
         Tests the case where the username passed in the header is a valid User.
         """
         num_users = User.objects.count()
-        response = self.client.get('/remote_user/',
-                                   **{self.header: self.known_user})
+        self.headers[self.header] = self.known_user.username
+        response = self.client.get('/remote_user/', **self.headers)
         self.assertEqual(response.context['user'].username, 'knownuser')
         self.assertEqual(User.objects.count(), num_users)
         # A different user passed in the headers causes the new user
         # to be logged in.
-        response = self.client.get('/remote_user/',
-                                   **{self.header: self.known_user2})
+        self.headers[self.header] = self.known_user2.username
+        response = self.client.get('/remote_user/', **self.headers)
         self.assertEqual(response.context['user'].username, 'knownuser2')
         self.assertEqual(User.objects.count(), num_users)
 
@@ -110,9 +113,9 @@ class RemoteUserTest(TestCase):
         )
         self.patched_settings.enable()
 
+        self.headers[self.header] = self.known_user.username
         # Known user authenticates
-        response = self.client.get('/remote_user/',
-                                   **{self.header: self.known_user})
+        response = self.client.get('/remote_user/', **self.headers)
         self.assertEqual(response.context['user'].username, 'knownuser')
         # During the session, the REMOTE_USER header disappears. Should trigger logout.
         response = self.client.get('/remote_user/')
@@ -141,13 +144,13 @@ class RemoteUserTest(TestCase):
         that the original user is logged out
         """
 
+        self.headers[self.header] = self.known_user.username
         # Known user authenticates
-        response = self.client.get('/remote_user/',
-                                   **{self.header: self.known_user})
+        response = self.client.get('/remote_user/', **self.headers)
         self.assertEqual(response.context['user'].username, 'knownuser')
+        self.headers[self.header] = 'newnewuser'
         # During the session, the REMOTE_USER changes to a different user.
-        response = self.client.get('/remote_user/',
-                                   **{self.header: "newnewuser"})
+        response = self.client.get('/remote_user/', **self.headers)
         # The current user is not the prior remote_user.
         # In backends that create a new user, username is "newnewuser"
         # In backends that do not create new users, it is '' (anonymous user)
@@ -155,7 +158,8 @@ class RemoteUserTest(TestCase):
         self.assertTrue(response.context['user'].username in ['', 'newnewuser'])
 
     def test_active_user(self):
-        response = self.client.get('/remote_user/', **{self.header: 'knownuser'})
+        self.headers[self.header] = 'knownuser'
+        response = self.client.get('/remote_user/', **self.headers)
         if django_1_10:
             self.assertFalse(response.context['user'].is_anonymous)
         else:
@@ -164,7 +168,8 @@ class RemoteUserTest(TestCase):
     def test_inactive_user(self):
         self.known_user.is_active = False
         self.known_user.save()
-        response = self.client.get('/remote_user/', **{self.header: 'knownuser'})
+        self.headers[self.header] = 'knownuser'
+        response = self.client.get('/remote_user/', **self.headers)
         if django_1_10:
             self.assertTrue(response.context['user'].is_anonymous)
         else:

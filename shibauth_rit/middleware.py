@@ -73,7 +73,7 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
         request.session['shib'] = shib_meta
         if error:
             self.handle_parse_exception(shib_meta)
-            pass
+            return
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
