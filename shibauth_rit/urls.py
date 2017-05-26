@@ -6,12 +6,9 @@ from django.conf.urls import include, url
 # Local Imports
 from .views import ShibLoginView, ShibLogoutView, ShibView
 
-urls = [
-    url(r'^$', ShibView.as_view(), name='info'),
-    url(r'^login/$', ShibLoginView.as_view(), name='login'),
-    url(r'^logout/$', ShibLogoutView.as_view(), name='logout'),
-]
 
 urlpatterns = [
-    include(r'^$', urls, namespace='shib')
+    url(r'^$', ShibView.as_view(), name='shibauth_info'),
+    url(r'^login/$', ShibLoginView.as_view(), name='shibauth_login'),
+    url(r'^logout/$', ShibLogoutView.as_view(), name='shibauth_logout'),
 ]
