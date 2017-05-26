@@ -48,21 +48,64 @@ Add Django Shib Auth RIT's URL patterns:
         ...
     ]
 
-Features
---------
+Add the middleware to process requests:
 
-* TODO
+.. code-block:: python
+    
+    # use MIDDLEWARE_CLASSES on Django 1.8
+    MIDDLEWARE = (
+      ...
+      'django.contrib.auth.middleware.AuthenticationMiddleware',
+      'shibauth_rit.middleware.ShibauthRitMiddleware',
+      ...
+    )
+
+Set the `LOGIN_URL` setting to the login handler of RIT's Shibboleth installation:
+
+.. code-block:: python
+
+    LOGIN_URL = 'https://rit.edu/Shibboleth.sso/Login'
+
+
+Context Processors
+------------------
+
+There are two context processors included which allow you to place `{{ login_link }}` or `{{ logout_link }}` in your templates for routing users to the login or logout page. These are available as a convenience and are not required. To activate, add the following to your settings:
+
+.. code-block:: python
+
+    TEMPLATES = [
+        {
+        ...
+            'OPTIONS': {
+                'context_processors': [
+                    ...
+                    'shibauth_rit.context_processors.login_link',
+                    'shibauth_rit.context_processors.logout_link',
+                    ...
+                ],
+            },
+        ...
+        },
+    ]
+
 
 Running Tests
 -------------
 
-Does the code actually work?
+To do a simple test run with your current config
+
+::
+    $ python runtests.py
+    
+To comprehensively test the suite across versions of python and django
 
 ::
 
     source <YOURVIRTUALENV>/bin/activate
     (myenv) $ pip install tox
     (myenv) $ tox
+
 
 Credits
 -------
