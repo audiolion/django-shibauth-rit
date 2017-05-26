@@ -1,33 +1,23 @@
 # Config file for automatic testing at travis-ci.org
+sudo: false
+
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "3.6"
 
 language: python
 
 matrix:
-  - python: 2.7
-    env: TOX_ENV=py27-django-18
-    env: TOX_ENV=py27-django-110
-    env: TOX_ENV=py27-django-111
-  - python: 3.3
-    env: TOX_ENV=py33-django-18
-  - python: 3.4
-    env: TOX_ENV=py34-django-18
-    env: TOX_ENV=py34-django-110
-    env: TOX_ENV=py34-django-111
-  - python: 3.5
-    env: TOX_ENV=py35-django-18
-    env: TOX_ENV=py35-django-110
-    env: TOX_ENV=py35-django-111
-  - python: 3.6
-    env: TOX_ENV=py36-django-18
-    env: TOX_ENV=py36-django-110
-    env: TOX_ENV=py36-django-111
   fast_finish: true
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install -r requirements_test.txt
 
 # command to run tests using coverage, e.g. python setup.py test
-script: tox -e $TOX_ENV
+script: tox
 
 after_success:
-  - codecov -e TOX_ENV
+  - codecov
