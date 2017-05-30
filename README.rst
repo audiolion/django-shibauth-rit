@@ -13,11 +13,6 @@ Django Shib Auth RIT
 
 Integrate Shibboleth Authentication with your RIT projects
 
-Documentation
--------------
-
-The full documentation is at https://django-shibauth-rit.readthedocs.io.
-
 Quickstart
 ----------
 
@@ -31,7 +26,7 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'shibauth_rit.apps.ShibauthRitConfig',
+        'shibauth_rit',
         ...
     )
 
@@ -60,12 +55,9 @@ Add Django Shib Auth RIT's URL patterns:
 
 .. code-block:: python
 
-    from shibauth_rit import urls as shibauth_rit_urls
-
-
     urlpatterns = [
         ...
-        url(r'^', include(shibauth_rit_urls)),
+        url(r'^', include('shibauth_rit.urls')),
         ...
     ]
 
@@ -73,7 +65,7 @@ Set the `LOGIN_URL` setting to the login handler of RIT's Shibboleth installatio
 
 .. code-block:: python
 
-    LOGIN_URL = 'https://rit.edu/Shibboleth.sso/Login'
+    LOGIN_URL = 'https://<your-site-root>/Shibboleth.sso/Login'
 
 Map Shibboleth's return attributes to your user model:
 
@@ -115,6 +107,36 @@ required and should be `'mail': (False, 'email')`.
 
 Note: If email is a required field on your model, shibboleth doesn't guarantee that `mail` will be populated so you will need to handle that exception. You can do this by subclassing `ShibauthRitBackend` and overriding `handle_parse_exception()` method. See [Subclassing ShibauthRitBackend]().
 
+.htaccess Setup
+---------------
+
+This package requires your site to be hosted on RIT's servers. The .htaccess should look like this
+
+.. code-block:: apache
+
+  # Ensure https is on. required for shibboleth auth
+  RewriteCond ${HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST} [R,L]
+
+  # Two options, lazy loading where people do not need to authenticate to get to your site
+  <If "%{HTTPS} == 'on'">
+    SSLRequireSSL
+    AuthType shibboleth
+    Require shibboleth
+    ShibRequestSetting requireSession false
+    ShibRedirectToSSL 443
+  </If>
+
+  # Or no lazy loading, strict requirement of shib authentication before accesing site
+  <If "%{HTTPS} == 'on'">
+    SSLRequireSSL
+    AuthType shibboleth
+    ShibRequireSession On
+    require valid-user
+    # see https://www.rit.edu/webdev/authenticating-and-authorizing-rit-users for other require options
+  </If>
+
+This sets up some stuff with the Apache webserver so when people go to https://<your-site-root>/Shibboleth.sso/Login it initiates the redirect to RIT's Shibboleth logon. Don't put a url route there, though I think Apache would always pick it up before it got to your code, might as well not mess with it.
 
 Context Processors
 ------------------
