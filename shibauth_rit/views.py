@@ -6,12 +6,11 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
+from django.utils.six.moves.urllib.parse import quote
 from django.views.generic import TemplateView
 
 # First Party Library Imports
 from shibauth_rit.conf import settings
-
-from django.utils.six.moves.urllib.parse import quote
 
 
 class ShibView(TemplateView):
