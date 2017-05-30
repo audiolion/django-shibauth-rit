@@ -105,7 +105,7 @@ User model's requirements. If your User model is as follow:
 Then ``username`` is a required attribute and should be ``'uid': (True, 'username')`` but email is not
 required and should be ``'mail': (False, 'email')``.
 
-Note: If email is a required field on your model, shibboleth doesn't guarantee that `mail` will be populated so you will need to handle that exception. You can do this by subclassing `ShibauthRitBackend` and overriding ``handle_parse_exception()`` method. See `Subclassing ShibauthRitBackend`_ .
+Note: If email is a required field on your model, shibboleth doesn't guarantee that `mail` will be populated so you will need to handle that exception. You can do this by subclassing `ShibauthRitBackend` and overriding ``handle_parse_exception()`` method. See `Subclassing ShibauthRitMiddleware`_ .
 
 .htaccess Setup
 ---------------
@@ -161,10 +161,53 @@ There are two context processors included which allow you to place `{{ login_lin
     ]
 
 
-Subclassing ShibauthRitBackend
+Subclassing ShibauthRitMiddleware
 ------------------------------
 
+ShibauthRitMiddleware has a few hooks that you can utilize to get customized behavior. To use these create a ``backends.py`` file and add the following:
 
+.. code-block:: python
+
+    from shibauth_rit.middleware import ShibauthRitMiddleware as middleware
+    from shibauth_rit.middleware import ShibauthRitValidationException
+
+    
+    class ShibauthRitMiddleware(middleware):
+    
+        def make_profile(self, user, shib_meta):
+            """
+            This is here as a stub to allow subclassing of ShibauthRitMiddleware
+            to include a make_profile method that will create a Django user profile
+            from the Shib provided attributes.  By default it does nothing.
+            """
+            pass
+
+        def setup_session(self, request):
+            """
+            If you want to add custom code to setup user sessions, you can extend this.
+            """
+            pass
+
+        def handle_parse_exception(self, shib_meta):
+            """
+            This is a stub method that can be subclassed to handle what should happen when a parse
+            exception occurs. If you raise ShibauthRitValidationException it will need to be caught
+            further up to prevent an internal server error (HTTP 500). An example of this would be if
+            you require an email address and RIT Shibboleth doesn't return one, what should you do?
+            """
+            pass
+
+
+Replace ``pass`` with any custom code you want to run. Then make sure to modify your ``MIDDLEWARE`` or ``MIDDLEWARE_CLASSES`` attribute to include the path to your custom middleware and replace this packages.
+
+.. code-block:: python
+
+    MIDDLEWARE = (
+        ...
+        yourapp.backends.ShibauthRitMiddleware,
+        ...
+    )
+        
 Running Tests
 -------------
 
@@ -193,4 +236,4 @@ Tools used in rendering this package:
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
-.. _`Subclassing ShibauthRitBackend`: #subclassing-shibauthritbackend
+.. _`Subclassing ShibauthRitMiddleware`: #subclassing-shibauthritmiddleware
