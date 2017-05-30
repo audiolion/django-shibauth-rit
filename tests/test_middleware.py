@@ -110,7 +110,11 @@ class TestShibauthRitMiddleware(TestCase):
         user.is_active = True
         user.save()
         g, _ = Group.objects.get_or_create(name='should_be_removed')
+        g2, _ = Group.objects.get_or_create(name='should_not_be_removed')
         g.user_set.add(user)
+        g2.user_set.add(user)
+        headers = settings.SAMPLE_HEADERS
+        headers["ritEduAffiliation"] = "should_not_be_removed;Student"
         self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
         user = User.objects.get(username='rrcdis1')
         self.assertTrue(g not in user.groups.all())
