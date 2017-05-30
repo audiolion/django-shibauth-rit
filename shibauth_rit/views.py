@@ -72,6 +72,6 @@ class ShibLogoutView(TemplateView):
         # Get target url in order of preference.
         next = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL") or \
             quote(self.request.GET.get(self.redirect_field_name, '')) or \
-            quote(request.build_absolute_uri())
+            quote(request.path)
         logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") + "?target={}".format(next)
         return redirect(logout)
