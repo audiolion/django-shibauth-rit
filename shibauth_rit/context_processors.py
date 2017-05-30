@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 # Third Party Library Imports
-from django.core.urlresolvers import reverse
 from django.utils.six.moves.urllib_parse import quote
 
 # First Party Library Imports
 from shibauth_rit.conf import settings
+
+from .compat import reverse
+
 
 
 def login_link(request):
