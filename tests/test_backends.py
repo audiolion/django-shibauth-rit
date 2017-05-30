@@ -4,10 +4,10 @@
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse_lazy
 from django.test import RequestFactory, TestCase
 
 # First Party Library Imports
+from shibauth_rit.compat import reverse_lazy
 from shibauth_rit.middleware import ShibauthRitMiddleware
 
 try:

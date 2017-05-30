@@ -3,8 +3,9 @@
 # Third Party Library Imports
 from django.conf import settings
 from django.contrib.auth.models import Group, User
-from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
+
+from shibauth_rit.compat import reverse_lazy
 
 settings.SHIBAUTH_ATTRIBUTE_MAP = {
     "idp": (False, "idp"),
