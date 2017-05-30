@@ -9,7 +9,6 @@ from shibauth_rit.conf import settings
 from .compat import reverse
 
 
-
 def login_link(request):
     """
     This assumes your login link is the Shibboleth login page for your server
