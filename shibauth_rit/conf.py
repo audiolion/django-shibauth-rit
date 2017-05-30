@@ -22,6 +22,7 @@ class ShibauthRitConf(AppConf):
     LOGOUT_REDIRECT_URL = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL", None)
     LOGOUT_SESSION_KEY = getattr(settings, "SHIBAUTH_FORCE_REAUTH_SESSION_KEY", "shib_force_reauth")
     MOCK_HEADERS = False
+    REDIRECT_FIELD_NAME = getattr(settings, "SHIBAUTH_REDIRECT_FIELD_NAME", "target")
     REMOTE_USER_HEADER = getattr(settings, "SHIBAUTH_REMOTE_USER_HEADER", "REMOTE_USER")
 
     class Meta:

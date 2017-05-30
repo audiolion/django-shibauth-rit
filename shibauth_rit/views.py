@@ -44,7 +44,7 @@ class ShibLoginView(TemplateView):
     Some code borrowed from:
     https://github.com/stefanfoulis/django-class-based-auth-views.
     """
-    redirect_field_name = "target"
+    redirect_field_name = settings.SHIBAUTH_REDIRECT_FIELD_NAME
 
     def get(self, *args, **kwargs):
         # Remove session value that is forcing Shibboleth reauthentication.
@@ -60,7 +60,7 @@ class ShibLogoutView(TemplateView):
     Some code borrowed from:
     https://github.com/stefanfoulis/django-class-based-auth-views.
     """
-    redirect_field_name = "target"
+    redirect_field_name = settings.SHIBAUTH_REDIRECT_FIELD_NAME
 
     def get(self, request, *args, **kwargs):
         # Log the user out.
