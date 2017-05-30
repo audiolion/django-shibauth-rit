@@ -89,7 +89,7 @@ docs the current attributes returned are:
 
 Note: Additional attributes can be configured on a site-by-site basis. Please contact the ITS Service Desk with requests for additional attributes.
 
-When you map attributes, you use a Tuple of `(Boolean, 'UserModelField')` where `Boolean` indicates if the field is `REQUIRED`. This should match your
+When you map attributes, you use a Tuple of ``(Boolean, 'UserModelField')`` where ``Boolean`` indicates if the field is ``REQUIRED``. This should match your
 User model's requirements. If your User model is as follow:
 
 .. code-block:: python
@@ -102,10 +102,10 @@ User model's requirements. If your User model is as follow:
         username = models.CharField(_('username'), unique=True, required=True, max_length=50)
         name = models.CharField(_('Name of User'), blank=True, max_length=100)
 
-Then `username` is a required attribute and should be `'uid': (True, 'username')` but email is not
-required and should be `'mail': (False, 'email')`.
+Then ``username`` is a required attribute and should be ``'uid': (True, 'username')`` but email is not
+required and should be ``'mail': (False, 'email')``.
 
-Note: If email is a required field on your model, shibboleth doesn't guarantee that `mail` will be populated so you will need to handle that exception. You can do this by subclassing `ShibauthRitBackend` and overriding `handle_parse_exception()` method. See [Subclassing ShibauthRitBackend]().
+Note: If email is a required field on your model, shibboleth doesn't guarantee that `mail` will be populated so you will need to handle that exception. You can do this by subclassing `ShibauthRitBackend` and overriding ``handle_parse_exception()`` method. See `Subclassing ShibauthRitBackend`_ .
 
 .htaccess Setup
 ---------------
@@ -161,6 +161,10 @@ There are two context processors included which allow you to place `{{ login_lin
     ]
 
 
+Subclassing ShibauthRitBackend
+------------------------------
+
+
 Running Tests
 -------------
 
@@ -189,3 +193,4 @@ Tools used in rendering this package:
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
+.. _`Subclassing ShibauthRitBackend`: #subclassing-shibauthritbackend
