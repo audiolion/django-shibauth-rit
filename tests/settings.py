@@ -7,7 +7,7 @@ from __future__ import unicode_literals, absolute_import
 import django
 
 
-DEBUG = True
+SHIBAUTH_TESTING = True
 USE_TZ = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -36,8 +36,6 @@ TEMPLATES = [
     },
 ]
 
-ROOT_URLCONF = "tests.urls"
-
 ALLOWED_HOSTS = ['rit.edu']
 
 INSTALLED_APPS = [
@@ -48,6 +46,8 @@ INSTALLED_APPS = [
     "shibauth_rit",
 ]
 
+ROOT_URLCONF = "tests.urls"
+
 SITE_ID = 1
 
 if django.VERSION >= (1, 10):
@@ -56,9 +56,9 @@ if django.VERSION >= (1, 10):
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'shibauth_rit.middleware.ShibauthRitMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        'shibauth_rit.middleware.ShibauthRitMiddleware',
     )
 else:
     MIDDLEWARE_CLASSES = (
@@ -66,9 +66,9 @@ else:
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'shibauth_rit.middleware.ShibauthRitMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        'shibauth_rit.middleware.ShibauthRitMiddleware',
     )
 
 SHIBAUTH_ATTRIBUTE_MAP = {
@@ -82,8 +82,7 @@ AUTHENTICATION_BACKENDS = (
 
 ROOT_URLCONF = 'tests.urls'
 
-SHIBAUTH_LOGOUT_URL = 'https://sso.rit.edu/logout'
-SHIBAUTH_LOGOUT_REDIRECT_URL = 'http://rit.edu/'
+SHIBAUTH_LOGIN_URL = 'https://localhost:8000/Shibboleth.sso/Login'
 
 SHIBAUTH_REMOTE_USER_HEADER = "uid"
 

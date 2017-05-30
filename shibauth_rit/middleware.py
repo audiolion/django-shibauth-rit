@@ -103,18 +103,17 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
 
     def make_profile(self, user, shib_meta):
         """
-        This is here as a stub to allow subclassing of ShibbolethRemoteUserMiddleware
+        This is here as a stub to allow subclassing of ShibauthRitMiddleware
         to include a make_profile method that will create a Django user profile
         from the Shib provided attributes.  By default it does nothing.
         """
-        return
+        pass
 
     def setup_session(self, request):
         """
-        If you want to add custom code to setup user sessions, you
-        can extend this.
+        If you want to add custom code to setup user sessions, you can extend this.
         """
-        return
+        pass
 
     def handle_parse_exception(self, shib_meta):
         """
@@ -122,7 +121,7 @@ class ShibauthRitMiddleware(RemoteUserMiddleware):
         exception occurs. If you raise ShibauthRitValidationException it will need to be caught
         further up to prevent an internal server error (HTTP 500).
         """
-        return
+        pass
 
     def update_user_groups(self, request, user):
         groups = self.parse_group_attributes(request)

@@ -60,6 +60,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'django-appconf>=0.6',
+        'requests>=2.0.0',
     ],
     license="MIT",
     zip_safe=False,

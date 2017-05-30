@@ -9,9 +9,6 @@ from django.http import HttpResponse
 from django.template import RequestContext, Template
 from django.views.decorators.cache import never_cache
 
-# First Party Library Imports
-from shibauth_rit.urls import urlpatterns as shibauth_rit_urls
-
 
 @never_cache
 def remote_user_auth_view(request):
@@ -22,6 +19,6 @@ def remote_user_auth_view(request):
 
 
 urlpatterns = [
-    url(r'^', include(shibauth_rit_urls, namespace='shibauth_rit')),
+    url(r'^shib/', include('shibauth_rit.urls')),
     url(r'^remote_user/$', remote_user_auth_view),
 ]

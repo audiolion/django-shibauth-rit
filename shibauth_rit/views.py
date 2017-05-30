@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
+import requests
 
 # First Party Library Imports
 from shibauth_rit.conf import settings
@@ -69,5 +70,5 @@ class ShibLogoutView(TemplateView):
         self.request.session[getattr(settings, "SHIBAUTH_LOGOUT_SESSION_KEY")] = True
         # Get logout redirect url
         next = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL")
-        logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") + "?target={}".format(next)
-        return redirect(logout)
+        requests.post('https://shibboleth.main.ad.rit.edu/logout.html', data='')
+        return redirect(next)

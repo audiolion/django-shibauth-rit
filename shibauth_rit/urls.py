@@ -12,7 +12,7 @@ shibauth_urlpatterns = [
     url(r'^logout/$', ShibLogoutView.as_view(), name='shibauth_logout'),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG or getattr(settings, 'SHIBAUTH_TESTING', False):
     shibauth_urlpatterns.append(url(r'^$', ShibView.as_view(), name='shibauth_info'))
 
 urlpatterns = [
