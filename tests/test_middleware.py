@@ -102,3 +102,15 @@ class TestShibauthRitMiddleware(TestCase):
     def test_missing_shib_attributes(self):
         self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
         self.assertEqual(User.objects.count(), 0)
+
+    @override_settings(SHIBAUTH_GROUP_ATTRIBUTES=['ritEduAffiliation'])
+    def test_group_removal(self):
+        user, _ = User.objects.get_or_create(username='rrcdis1')
+        user.set_password('12345')
+        user.is_active = True
+        user.save()
+        g, _ = Group.objects.get_or_create(name='should_be_removed')
+        g.user_set.add(user)
+        self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
+        user = User.objects.get(username='rrcdis1')
+        self.assertTrue(g not in user.groups.all())
