@@ -12,4 +12,6 @@ shibauth_urlpatterns = [
     url(r'^logout/$', ShibLogoutView.as_view(), name='shibauth_logout'),
 ]
 
-url(r'^$', include(shibauth_urlpatterns, app_name='shibauth_rit', namespace='shibauth_rit'))
+urlpatterns = [
+    url(r'^$', include(shibauth_urlpatterns, app_name='shibauth_rit', namespace='shibauth_rit')),
+]
