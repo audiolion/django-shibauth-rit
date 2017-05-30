@@ -23,7 +23,7 @@ def get_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 
-version = 1.0.0
+version = get_version("shibauth_rit", "__init__.py")
 
 
 if sys.argv[-1] == 'publish':
