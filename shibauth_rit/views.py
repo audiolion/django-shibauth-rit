@@ -60,7 +60,6 @@ class ShibLogoutView(TemplateView):
     Some code borrowed from:
     https://github.com/stefanfoulis/django-class-based-auth-views.
     """
-    redirect_field_name = settings.SHIBAUTH_REDIRECT_FIELD_NAME
 
     def get(self, request, *args, **kwargs):
         # Log the user out.
@@ -68,9 +67,7 @@ class ShibLogoutView(TemplateView):
         # Set session key that middleware will use to force
         # Shibboleth reauthentication.
         self.request.session[getattr(settings, "SHIBAUTH_LOGOUT_SESSION_KEY")] = True
-        # Get target url in order of preference.
-        next = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL") or \
-            quote(self.request.GET.get(self.redirect_field_name, '')) or \
-            quote(request.path)
+        # Get logout redirect url
+        next = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL")
         logout = getattr(settings, "SHIBAUTH_LOGOUT_URL") + "?target={}".format(next)
         return redirect(logout)

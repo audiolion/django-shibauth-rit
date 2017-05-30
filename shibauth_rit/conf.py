@@ -20,7 +20,7 @@ class ShibauthRitConf(AppConf):
     GROUP_ATTRIBUTES = getattr(settings, "SHIBAUTH_GROUP_ATTRIBUTES", [])
     LOGIN_URL = getattr(settings, "SHIBAUTH_LOGIN_URL", None)
     LOGOUT_URL = getattr(settings, "SHIBAUTH_LOGOUT_URL", None)
-    LOGOUT_REDIRECT_URL = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL", None)
+    LOGOUT_REDIRECT_URL = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL", "https://shibboleth.main.ad.rit.edu/logout.html")
     LOGOUT_SESSION_KEY = getattr(settings, "SHIBAUTH_FORCE_REAUTH_SESSION_KEY", "shib_force_reauth")
     MOCK_HEADERS = False
     REDIRECT_FIELD_NAME = getattr(settings, "SHIBAUTH_REDIRECT_FIELD_NAME", "target")
