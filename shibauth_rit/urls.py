@@ -7,6 +7,8 @@ from django.conf.urls import include, url
 from .views import ShibLoginView, ShibLogoutView, ShibView
 
 
+app_name = 'shibauth_rit'
+
 urlpatterns = [
     url(r'^$', ShibView.as_view(), name='shibauth_info'),
     url(r'^login/$', ShibLoginView.as_view(), name='shibauth_login'),
