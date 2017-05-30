@@ -136,7 +136,7 @@ This package requires your site to be hosted on RIT's servers. The .htaccess sho
     # see https://www.rit.edu/webdev/authenticating-and-authorizing-rit-users for other require options
   </If>
 
-This sets up some stuff with the Apache webserver so when people go to https://<your-site-root>/Shibboleth.sso/Login it initiates the redirect to RIT's Shibboleth logon. Don't put a url route there, though I think Apache would always pick it up before it got to your code, might as well not mess with it.
+This sets up some stuff with the Apache webserver so when people go to ``https://<your-site-root>/Shibboleth.sso/Login`` it initiates the redirect to RIT's Shibboleth logon. Don't put a url route there, though I think Apache would always pick it up before it got to your code, might as well not mess with it.
 
 Context Processors
 ------------------
@@ -164,7 +164,7 @@ There are two context processors included which allow you to place `{{ login_lin
 Subclassing ShibauthRitMiddleware
 ------------------------------
 
-ShibauthRitMiddleware has a few hooks that you can utilize to get customized behavior. To use these create a ``backends.py`` file and add the following:
+ShibauthRitMiddleware has a few hooks that you can utilize to get customized behavior. To use these create a ``middleware.py`` file and add the following:
 
 .. code-block:: python
 
