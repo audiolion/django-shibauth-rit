@@ -79,7 +79,7 @@ Map Shibboleth's return attributes to your user model:
 Shibboleth returns a number of attributes after a successful authentication. According to RIT's
 docs the current attributes returned are:
 
-::
+.. code-block::
     uid - the user's RIT username
     givenName - the user's given (first) name
     sn -the user's surname (last/family name)
@@ -166,12 +166,13 @@ Running Tests
 
 To do a simple test run with your current config
 
-::
+.. code-block:: bash
+
     $ python runtests.py
 
 To comprehensively test the suite across versions of python and django
 
-::
+.. code-block:: bash
 
     source <YOURVIRTUALENV>/bin/activate
     (myenv) $ pip install tox
