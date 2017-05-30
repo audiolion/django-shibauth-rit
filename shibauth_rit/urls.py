@@ -2,6 +2,7 @@
 
 # Third Party Library Imports
 from django.conf.urls import include, url
+from shibauth_rit.conf import settings
 
 # Local Imports
 from .views import ShibLoginView, ShibLogoutView, ShibView
