@@ -15,12 +15,12 @@ class ShibauthRitConf(AppConf):
     }
     CREATE_UNKNOWN_USER = getattr(settings, "SHIBAUTH_CREATE_UNKNOWN_USER", True)
     GROUP_ATTRIBUTES = getattr(settings, "SHIBAUTH_GROUP_ATTRIBUTES", [])
-    LOGIN_URL = getattr(settings, "LOGIN_URL", None)
+    LOGIN_URL = getattr(settings, "SHIBAUTH_LOGIN_URL", None)
     LOGOUT_URL = getattr(settings, "SHIBAUTH_LOGOUT_URL", None)
     LOGOUT_REDIRECT_URL = getattr(settings, "SHIBAUTH_LOGOUT_REDIRECT_URL", None)
     LOGOUT_SESSION_KEY = getattr(settings, "SHIBAUTH_FORCE_REAUTH_SESSION_KEY", "shib_force_reauth")
     MOCK_HEADERS = False
-    REMOTE_USER_HEADER = "REMOTE_USER"
+    REMOTE_USER_HEADER = getattr(settings, "SHIBAUTH_REMOTE_USER_HEADER", "REMOTE_USER")
 
     class Meta:
         prefix = "SHIBAUTH"
