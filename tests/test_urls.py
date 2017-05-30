@@ -6,10 +6,11 @@ from importlib import import_module
 
 # Third Party Library Imports
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.test import SimpleTestCase, override_settings
 
 # First Party Library Imports
-from shibauth_rit import urls
+from shibauth_rit import conf, urls
 from shibauth_rit.compat import reverse
 
 try:
@@ -51,3 +52,11 @@ class TestDebugUrls(SimpleTestCase):
         self.assertEqual(settings.SHIBAUTH_TESTING, False)
         with self.assertRaises(NoReverseMatch):
             reverse('shibauth_rit:shibauth_info')
+
+
+@override_settings(SHIBAUTH_LOGIN_URL=None)
+class TestShibauthSettings(SimpleTestCase):
+
+    def test_doesnt_exist(self):
+        with self.assertRaises(ImproperlyConfigured):
+            reload(conf)
