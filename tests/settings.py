@@ -31,6 +31,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'shibauth_rit.context_processors.login_link',
+                'shibauth_rit.context_processors.logout_link',
             ],
         },
     },

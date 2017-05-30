@@ -11,10 +11,7 @@ from django.views.generic import TemplateView
 # First Party Library Imports
 from shibauth_rit.conf import settings
 
-try:
-    from django.utils.six.moves.urllib.parse import quote
-except ImportError:
-    from urllib import quote
+from django.utils.six.moves.urllib.parse import quote
 
 
 class ShibView(TemplateView):
