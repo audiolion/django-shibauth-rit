@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Third Party Library Imports
 from appconf import AppConf
 from django.conf import settings

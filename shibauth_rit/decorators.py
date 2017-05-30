@@ -1,6 +1,5 @@
-"""
-Decorators to use with Shibboleth.
-"""
+# -*- coding: utf-8 -*-
+
 # First Party Library Imports
 from shibauth_rit.conf import settings
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Third Party Library Imports
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required

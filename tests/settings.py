@@ -1,7 +1,11 @@
 # -*- coding: utf-8
+
+# Future Imports
 from __future__ import unicode_literals, absolute_import
 
+# Third Party Library Imports
 import django
+
 
 DEBUG = True
 USE_TZ = True

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Third Party Library Imports
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import RemoteUserBackend

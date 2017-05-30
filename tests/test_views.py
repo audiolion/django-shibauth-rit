@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Third Party Library Imports
+
 # Third Party Library Imports
 from django.conf import settings
 from django.contrib.auth.models import User

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Third Party Library Imports
 import django
 from django.contrib import auth

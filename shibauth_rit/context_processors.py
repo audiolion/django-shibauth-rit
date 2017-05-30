@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Third Party Library Imports
 from django.core.urlresolvers import reverse
 from django.utils.six.moves.urllib_parse import quote
