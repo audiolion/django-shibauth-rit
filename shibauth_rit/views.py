@@ -32,13 +32,6 @@ class ShibView(TemplateView):
         """
         return super(ShibView, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, **kwargs):
-        """Process the request."""
-        next = self.request.GET.get('next', None)
-        if next is not None:
-            return redirect(next)
-        return super(ShibView, self).get(request)
-
     def get_context_data(self, **kwargs):
         context = super(ShibView, self).get_context_data(**kwargs)
         context['user'] = self.request.user
