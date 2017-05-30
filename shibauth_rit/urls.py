@@ -7,10 +7,12 @@ from django.conf.urls import include, url
 from .views import ShibLoginView, ShibLogoutView, ShibView
 
 shibauth_urlpatterns = [
-    url(r'^$', ShibView.as_view(), name='shibauth_info'),
     url(r'^login/$', ShibLoginView.as_view(), name='shibauth_login'),
     url(r'^logout/$', ShibLogoutView.as_view(), name='shibauth_logout'),
 ]
+
+if settings.DEBUG:
+    shibauth_urlpatterns.append(url(r'^$', ShibView.as_view(), name='shibauth_info'))
 
 urlpatterns = [
     url(r'', include((shibauth_urlpatterns, 'shibauth_rit', 'shibauth_rit'))),
