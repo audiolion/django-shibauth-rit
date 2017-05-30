@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 # Third Party Library Imports
+import requests
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
-import requests
 
 # First Party Library Imports
 from shibauth_rit.conf import settings

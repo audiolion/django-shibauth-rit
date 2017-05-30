@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+# First Party Library Imports
 from shibauth_rit.compat import reverse
 
 settings.SHIBAUTH_ATTRIBUTE_MAP = {

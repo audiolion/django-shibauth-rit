@@ -2,6 +2,8 @@
 
 # Third Party Library Imports
 from django.conf.urls import include, url
+
+# First Party Library Imports
 from shibauth_rit.conf import settings
 
 # Local Imports

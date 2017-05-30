@@ -6,6 +6,7 @@ from django.utils.six.moves.urllib_parse import quote
 # First Party Library Imports
 from shibauth_rit.conf import settings
 
+# Local Imports
 from .compat import reverse
 
 
