@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
 # First Party Library Imports
-from shibauth_rit.compat import reverse_lazy
+from shibauth_rit.compat import reverse
 from shibauth_rit.middleware import ShibauthRitMiddleware
 
 try:
@@ -47,13 +47,13 @@ from shibauth_rit import backends  # noqa; E402
 class TestAttributes(TestCase):
 
     def test_decorator_not_authenticated(self):
-        res = self.client.get(reverse_lazy('shibauth_rit:shibauth_info'))
+        res = self.client.get(reverse('shibauth_rit:shibauth_info'))
         self.assertEqual(res.status_code, 302)
         # Test the context - shouldn't exist
         self.assertEqual(res.context, None)
 
     def test_decorator_authenticated(self):
-        res = self.client.get(reverse_lazy('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
+        res = self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
         self.assertEqual(str(res.context['user']), 'rrcdis1')
         self.assertEqual(res.status_code, 200)
         user = res.context.get('user')
@@ -79,7 +79,7 @@ class TestShibauthRitBackend(TestCase):
 
     def test_create_unknown_user_true(self):
         self.assertFalse(User.objects.all())
-        shib_meta = self._get_valid_shib_meta(location=reverse_lazy('shibauth_rit:shibauth_info'))
+        shib_meta = self._get_valid_shib_meta(location=reverse('shibauth_rit:shibauth_info'))
         user = auth.authenticate(remote_user='sampledeveloper@school.edu', shib_meta=shib_meta)
         self.assertEqual(user.username, 'sampledeveloper@school.edu')
         self.assertEqual(User.objects.all()[0].username, 'sampledeveloper@school.edu')
@@ -88,7 +88,7 @@ class TestShibauthRitBackend(TestCase):
         with self.settings(SHIBAUTH_CREATE_UNKNOWN_USER=False):
             # because attr is set on the class we need to reload the module
             reload(backends)
-            shib_meta = self._get_valid_shib_meta(location=reverse_lazy('shibauth_rit:shibauth_info'))
+            shib_meta = self._get_valid_shib_meta(location=reverse('shibauth_rit:shibauth_info'))
             self.assertEqual(User.objects.all().count(), 0)
             user = auth.authenticate(remote_user='sampledeveloper@school.edu', shib_meta=shib_meta)
             self.assertTrue(user is None)
@@ -97,7 +97,7 @@ class TestShibauthRitBackend(TestCase):
         reload(backends)
 
     def test_ensure_user_attributes(self):
-        shib_meta = self._get_valid_shib_meta(location=reverse_lazy('shibauth_rit:shibauth_info'))
+        shib_meta = self._get_valid_shib_meta(location=reverse('shibauth_rit:shibauth_info'))
         # Create / authenticate the test user and store another mail address
         user = auth.authenticate(remote_user='sampledeveloper@school.edu', shib_meta=shib_meta)
         user.email = 'invalid_email@school.edu'
@@ -110,7 +110,7 @@ class TestShibauthRitBackend(TestCase):
         self.assertEqual(user2.email, 'rrcdis1@rit.edu')
 
     def test_change_required_attributes(self):
-        shib_meta = self._get_valid_shib_meta(location=reverse_lazy('shibauth_rit:shibauth_info'))
+        shib_meta = self._get_valid_shib_meta(location=reverse('shibauth_rit:shibauth_info'))
         user = auth.authenticate(remote_user='sampledeveloper@school.edu', shib_meta=shib_meta)
         user.username = 'new_user'
         user.save()
@@ -122,10 +122,10 @@ class LogoutTest(TestCase):
 
     def test_logout(self):
         # Login
-        login = self.client.get(reverse_lazy('shibauth_rit:shibauth_login'), **settings.SAMPLE_HEADERS)
+        login = self.client.get(reverse('shibauth_rit:shibauth_login'), **settings.SAMPLE_HEADERS)
         self.assertEqual(login.status_code, 302)
         # Logout
-        logout = self.client.get(reverse_lazy('shibauth_rit:shibauth_logout'), **settings.SAMPLE_HEADERS)
+        logout = self.client.get(reverse('shibauth_rit:shibauth_logout'), **settings.SAMPLE_HEADERS)
         self.assertEqual(logout.status_code, 302)
         # Ensure redirect happened.
         self.assertEqual(
@@ -135,7 +135,7 @@ class LogoutTest(TestCase):
         # Check to see if the session has the force logout key.
         self.assertTrue(self.client.session.get(settings.SHIBAUTH_LOGOUT_SESSION_KEY))
         # Load root url to see if user is in fact logged out.
-        resp = self.client.get(reverse_lazy('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
+        resp = self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
         self.assertEqual(resp.status_code, 302)
         # Make sure the context is empty.
         self.assertEqual(resp.context, None)

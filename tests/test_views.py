@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from shibauth_rit.compat import reverse_lazy
+from shibauth_rit.compat import reverse
 
 settings.SHIBAUTH_ATTRIBUTE_MAP = {
     "idp": (False, "idp"),
@@ -32,7 +32,7 @@ settings.ROOT_URLCONF = 'tests.urls'
 class ShibViewTest(TestCase):
 
     def test_view_redirects_when_not_logged_in(self):
-        res = self.client.get(reverse_lazy('shibauth_rit:shibauth_info'))
+        res = self.client.get(reverse('shibauth_rit:shibauth_info'))
         self.assertEqual(res.status_code, 302)
 
     def test_view_renders_when_logged_in(self):
@@ -40,7 +40,7 @@ class ShibViewTest(TestCase):
         headers = settings.SAMPLE_HEADERS
         headers['uid'] = 'user'
         headers['REMOTE_USER'] = user.username
-        res = self.client.get(reverse_lazy('shibauth_rit:shibauth_info'), **headers)
+        res = self.client.get(reverse('shibauth_rit:shibauth_info'), **headers)
         self.assertEqual(res.status_code, 200)
         self.assertTemplateUsed('shibauth_rit/user_info.html')
 
@@ -49,5 +49,5 @@ class ShibLoginViewTest(TestCase):
 
     def test_view_renders(self):
         with self.settings(SHIBAUTH_GROUP_ATTRIBUTES=[]):
-            res = self.client.get(reverse_lazy('shibauth_rit:shibauth_login'), **settings.SAMPLE_HEADERS)
+            res = self.client.get(reverse('shibauth_rit:shibauth_login'), **settings.SAMPLE_HEADERS)
             self.assertEqual(res.status_code, 302)
