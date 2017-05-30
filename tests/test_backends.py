@@ -4,7 +4,7 @@
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 
 # First Party Library Imports
 from shibauth_rit.compat import reverse
@@ -62,6 +62,12 @@ class TestAttributes(TestCase):
         self.assertEqual(user.last_name, 'Developer')
         self.assertTrue(user.is_authenticated())
         self.assertFalse(user.is_anonymous())
+
+    @override_settings(SHIBAUTH_ATTRIBUTE_MAP={'uid': (True, 'username')})
+    def test_no_non_required_kwargs(self):
+        res = self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
+        self.assertEqual(str(res.context['user']), 'rrcdis1')
+        self.assertEqual(res.status_code, 200)
 
 
 class TestShibauthRitBackend(TestCase):

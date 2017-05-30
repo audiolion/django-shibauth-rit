@@ -2,8 +2,9 @@
 
 # Third Party Library Imports
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.models import Group, User
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 # First Party Library Imports
 from shibauth_rit.compat import reverse
@@ -67,3 +68,37 @@ class TestShibauthRitMiddleware(TestCase):
             user = User.objects.get(username='rrcdis1')
             self.assertEqual(Group.objects.all().count(), 0)
             self.assertEqual(user.groups.all().count(), 0)
+
+    @override_settings(MIDDLEWARE_CLASSES=(
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'shibauth_rit.middleware.ShibauthRitMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ), MIDDLEWARE=(
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'shibauth_rit.middleware.ShibauthRitMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ))
+    def test_auth_middleware_not_loaded(self):
+        with self.assertRaises(ImproperlyConfigured):
+            self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
+
+    @override_settings(SHIBAUTH_ATTRIBUTE_MAP={
+        "idp": (True, "idp"),
+        "mail": (True, "email"),
+        "uid": (True, "username"),
+        "schoolStatus": (True, "status"),
+        "affiliation": (True, "affiliation"),
+        "sessionId": (True, "session_id"),
+        "givenName": (True, "first_name"),
+        "sn": (True, "last_name"),
+        "SomeNonExistingAttribute": (True, "SomeNonExistingAttribute")
+    })
+    def test_missing_shib_attributes(self):
+        self.client.get(reverse('shibauth_rit:shibauth_info'), **settings.SAMPLE_HEADERS)
+        self.assertEqual(User.objects.count(), 0)
