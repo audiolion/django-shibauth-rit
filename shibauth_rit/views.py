@@ -23,7 +23,7 @@ class ShibView(TemplateView):
     """
     template_name = 'shibauth_rit/user_info.html'
 
-    @method_decorator(login_required)
+    @method_decorator(login_required(redirect_field_name='target', login_url=getattr(settings, 'SHIBAUTH_LOGIN_URL')))  # noqa; E501
     def dispatch(self, request, *args, **kwargs):
         """
         Django docs say to decorate the dispatch method for
