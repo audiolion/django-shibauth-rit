@@ -3,6 +3,7 @@
 # Third Party Library Imports
 from appconf import AppConf
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 
 class ShibauthRitConf(AppConf):
@@ -27,3 +28,8 @@ class ShibauthRitConf(AppConf):
 
     class Meta:
         prefix = "SHIBAUTH"
+
+shibauth_rit = ShibauthRitConf()
+
+if shibauth_rit.LOGIN_URL is None:
+    raise ImproperlyConfigured('`SHIBAUTH_LOGIN_URL` must be a defined setting. Should be set to https://<your-site-root>/Shibboleth.sso/Login')
