@@ -13,5 +13,5 @@ shibauth_urlpatterns = [
 ]
 
 urlpatterns = [
-    url(r'^$', include(shibauth_urlpatterns, app_name='shibauth_rit', namespace='shibauth_rit')),
+    url(r'^$', include((shibauth_urlpatterns, 'shibauth_rit', 'shibauth_rit'))),
 ]
